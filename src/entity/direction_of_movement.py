@@ -17,7 +17,7 @@ class DirectionOfMovement:
         self.south = (0, -1)
         self.south_east = (1, -1)
 
-    def all_movement(self):
+    def all_movement(self) -> list:
         """
         Returns a list of all possible movements
         """
@@ -31,7 +31,7 @@ class DirectionOfMovement:
                 self.south,
                 self.south_east]
 
-    def x_movement(self):
+    def x_movement(self) -> list:
         """
         Returns a list of all possible movements along the x-axis
         """
@@ -39,7 +39,7 @@ class DirectionOfMovement:
                 self.center,
                 self.east]
 
-    def y_movement(self):
+    def y_movement(self) -> list:
         """
         Returns a list of all possible movements along the y-axis
         """
@@ -47,7 +47,7 @@ class DirectionOfMovement:
                 self.center,
                 self.south]
 
-    def z_movement(self):
+    def z_movement(self) -> list:
         """
         Returns a list of all possible movements along the z-axis (diagonal)
         """

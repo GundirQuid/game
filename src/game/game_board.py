@@ -1,3 +1,6 @@
+import operator
+
+
 class GameBoard:
     def __init__(self, size_x: int = 3, size_y: int = 3):
         """
@@ -82,3 +85,18 @@ class GameBoard:
             new_y_pos = initial_y_pos + update_location[1]
 
         return new_x_pos, new_y_pos
+
+    def helper_loop(self, location_current: tuple, location_change: tuple) -> tuple:
+        x_axis, y_axis = self.get_board_size()
+
+        for _ in range(x_axis * y_axis * 2 + 1):
+            old_location = location_current
+            location_current = tuple(map(operator.add, location_current, location_change))
+
+            # Default, we go from (0, 0) to (-20, 0), but (-20, 0) is not a valid spot,
+            # Since we have (-5, 5) to (4, -4), we need to figure out what to do to keep bounds
+            # To solve this, we will use a Wrap-around method, located inside GameBoard
+            if not self.verify_location(location_current):
+                location_current = self.wrap_around_location(old_location, location_change)
+
+        return location_current
