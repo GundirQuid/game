@@ -2,19 +2,20 @@ class DirectionOfMovement:
     def __init__(self):
         """
         Direction of movement as follows:
-        NW0 N1 NE2
-        W3  C4 E5
-        SW6 S7 SE8
+        NW | N | NE
+        W  | C | E
+        SW | S | SE
+        measured in x, y, so north_west = -1 for west, 1 for north, thus (-1, 1)
         """
-        self.north_west = 0
-        self.north = 1
-        self.north_east = 2
-        self.west = 3
-        self.center = 4
-        self.east = 5
-        self.south_west = 6
-        self.south = 7
-        self.south_east = 8
+        self.north_west = (-1, 1)
+        self.north = (0, 1)
+        self.north_east = (1, 1)
+        self.west = (-1, 0)
+        self.center = (0, 0)
+        self.east = (1, 0)
+        self.south_west = (-1, -1)
+        self.south = (0, -1)
+        self.south_east = (1, -1)
 
     def all_movement(self):
         """
