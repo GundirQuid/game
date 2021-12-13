@@ -4,17 +4,32 @@ import operator
 class GameBoard:
     def __init__(self, size_x: int = 3, size_y: int = 3):
         """
-        :param size_x: size of x-axis, between 3 and 1000
-        :param size_y: size of y-axis, between 3 and 1000
+        :param size_x: integer, size of x-axis, between 3 and 1000
+        :param size_y: integer, size of y-axis, between 3 and 1000
         """
+
+        if type(size_x) != int:
+            raise TypeError('GameBoard: size_x must be an integer')
+
+        if type(size_y) != int:
+            raise TypeError('GameBoard: size_y must be an integer')
+
         self.x_size = min(max(size_x, 3), 1000)
         self.y_size = min(max(size_y, 3), 1000)
 
     def get_board_size(self) -> tuple:
         return self.x_size, self.y_size
 
-    def get_board_layout(self) -> list:
+    def move_location(self, location: tuple, location_change: tuple):
+        next_location = tuple(map(operator.add, location, location_change))
+        if not self._verify_location(next_location):
+            next_location = self._wrap_around_location(location, location_change)
+
+        return next_location
+
+    def _get_board_layout(self) -> list:
         """
+        Private Method
         :return: Returns list[x-axis[x, y]]
         """
         x_size, y_size = self.get_board_size()
@@ -34,12 +49,13 @@ class GameBoard:
 
         return game_board_list
 
-    def verify_location(self, location: tuple = None) -> bool:
+    def _verify_location(self, location: tuple = None) -> bool:
         """
+        Private Method
         :param location: current location (x, y)
         :return: Iterates over each x_axis to see if (x, y) is located, return True if found, else False
         """
-        for x_axis in self.get_board_layout():
+        for x_axis in self._get_board_layout():
             if location in x_axis:
                 # (x, y) was found
                 return True
@@ -47,13 +63,14 @@ class GameBoard:
         # (x, y) was not found
         return False
 
-    def wrap_around_location(self, location: tuple = None, update_location: tuple = (0, 0)) -> tuple:
+    def _wrap_around_location(self, location: tuple = None, update_location: tuple = (0, 0)) -> tuple:
         """
+        Private Method
         :param location: takes in an Entity location
         :param update_location: go-to location (attempt to go-to but results in wrap-around)
         :return: Returns opposite border location, or initial location
         """
-        board_layout = self.get_board_layout()
+        board_layout = self._get_board_layout()
         initial_x_pos, initial_y_pos = location
         new_x_pos = new_y_pos = 0
 
@@ -85,18 +102,3 @@ class GameBoard:
             new_y_pos = initial_y_pos + update_location[1]
 
         return new_x_pos, new_y_pos
-
-    def helper_loop(self, location_current: tuple, location_change: tuple) -> tuple:
-        x_axis, y_axis = self.get_board_size()
-
-        for _ in range(x_axis * y_axis * 2 + 1):
-            old_location = location_current
-            location_current = tuple(map(operator.add, location_current, location_change))
-
-            # Default, we go from (0, 0) to (-20, 0), but (-20, 0) is not a valid spot,
-            # Since we have (-5, 5) to (4, -4), we need to figure out what to do to keep bounds
-            # To solve this, we will use a Wrap-around method, located inside GameBoard
-            if not self.verify_location(location_current):
-                location_current = self.wrap_around_location(old_location, location_change)
-
-        return location_current
